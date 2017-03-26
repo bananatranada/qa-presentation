@@ -10,15 +10,46 @@ So who here has heard about immutable infrastructures?
 
 What about Docker? Or Vagrant?
 - More people raise hands
-More people I guess. So some of you guys probably know what an immutable infrastructure is - just not the term "immutable infrastructure". But those tools, docker and vagrant, exist to achieve a level of immutability in your infrastructure.
+More people I guess. So some of you guys probably know what an immutable infrastructure is - just not the term itself. But those tools, docker and vagrant, exist to achieve a level of immutability in your infrastructure.
 
-So we know what immutability is. It's something that can't change. For example, in java whenever you modify a string, a new string is returned.
+So we know what immutability is. It's something that can't change. For example, in java whenever you modify a string, a new string is returned and the original string is not modified.
 
-But what about the term infrastructure? Well, in the most basic sense, it's an aggregation of various parts in an organization or system, in order to perform some kind of an operation. Like roads that allow us to go from one place to another. But in our case, you can think of it as the environment that allows your software to run.
+But what about the term infrastructure? Well, in the most basic sense, it's a combination of various parts in an organization or system, in order to perform some kind of an operation. Like roads that allow us to go from one place to another. Lighthouses to guide ships. But in our case, you can think of it as the environment that allows our software to run.
 
-So immutable infrastructure means a software environment that cannot change. In order to add remove or modify something in the environment, you have to create a new environment with those changes. Just like strings
+So immutable infrastructure means a software environment that cannot change. In order to add remove or modify something in the environment, you have to create a new environment with those changes in place. This is just like strings in java. You know, if you try to modify it, it returns a new string with those changes.
 
-Say you have a web server. The app is built using java. You're going to need to install the jvm so that we can run it. You also need to configure firewall so that  ...
+All in all, <read from slide>
+
+In other words, <read from slide> such as introducing new dependencies or configurations
+
+Let's go over a very simple scenario where this would be useful. Let's create a youtube video downloader. if you remember back in the days, youtube didn't buffer their videos so you could literally download the videos by opening up your browser's devtools, find the video it downloaded, and save that to your computer. but now youtube buffers them, so you'd only get chunks of the video as they play. what we want to do is to request those chunks in parallel and merge them into a single video. that's literally how youtube downloaders work these days. but let's suppose that we want to add an option to convert it to an audio format. so a developer finds a solution, implements it and pushes it to github. then QA pulls the changes and tries to test it, but it doesn't work. and what does the typical developer say? it works on my machine. i'm sure most of us have come across this scenario. well, it turns out the developer's machine includes a dependency that converts video to audio, but the tester's machine doesn't have it. with vagrant or docker, they would be running on the same environment with the same dependencies or configurations. whenever something is needed, they would add it to a template file. the others like QA would pull it and recreate their environment with those changes. so now everyone's machines are in sync.
+
+Again, this is a very simple example, with a single dependency. However, in a more complicated setup like a web server, you could create users, configure firewall, install runtimes, and so on. you could also do the same with other servers. like one for postgres and one for redis. and vagrant or docker can create the entire infrastructure for you. not only will everyone's environment will be the same, it makes integration testing much easier for QA.
+
+Now we're going to go over these tools, starting with vagrant.
+
+
+
+
+And the app is built using java. So you need the correct jvm version to run it.
+
+And for security measures, you probably want to create a privileged user so you're not running as root.
+
+You also need to configure the firewall so that it only exposes certain ports.
+
+And possibly more depending on your requirements.
+
+And that's just the web server.
+
+Now you need to set up a database server. Say we're using postgres. So we need to make sure we're using the correct posgres version. Create the appropriate users. And finally setup the database and its tables. Possibly prepopulate them with initial data. Also you have to remember to expose only the port that it's running on. And more.
+
+Then you may have more servers for different tasks.
+
+You can already tell how fragile this will be. As more and more changes are made to the infrastructure, the harder it will be to track them down. Not only that, but think about the development and QA. They're not always going to be in sync with every single change that occurs at the IT level.
+
+Traditionally, this is problem is solved by configuration management tools like puppet or chef. They can automate the process of setting up users, installing dependencies and so on. But they only work if you already have those systems in place. Docker and vagrant takes a step further so they instantiate those systems for you. And then you can choose to use puppet or chef on top of it.
+
+
 
 
 
